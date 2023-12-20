@@ -1,7 +1,8 @@
-Program IGC_Annex_A_scoring_WGC2023v3_1;
+Program Script_FCC2024;
 // Collaborate on writing scripts at Github:
-// https://github.com/naviter/seeyou_competition_scripts/
+// https://github.com/JanHrncirik/ScriptFCC2024
 //
+// Version 1.0 Date 2023.12.20 by Jan Hrncirik
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
 //       . Support for 7.4.5b Starting Procedures - Pre-start altitude
