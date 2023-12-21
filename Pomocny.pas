@@ -49,7 +49,6 @@ if NbrFixes > 0 then
                   Vresult:= 2; // found, nájdené, príznak pre ladenie
                   Break; // Ending the loop while, Ukonči slučku while!
                 end;
-
             end;
         end;
         // binary searches End

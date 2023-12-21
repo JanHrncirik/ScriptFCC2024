@@ -3,6 +3,10 @@ Program Script_FCC2024;
 // https://github.com/JanHrncirik/ScriptFCC2024
 //
 // Version 1.0 Date 2023.12.20 by Jan Hrncirik
+// Verzia 1.0 Date 2023.12.21
+//   . Opravený syntax v priraďovacom príkaze hendikepov
+//   . Prepnuté na používanie handikepov vo všetkých triedach
+//   . Doplnené binárne vyhľadávanie fixu času otvorenia odletu
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
 //       . Support for 7.4.5b Starting Procedures - Pre-start altitude
@@ -89,6 +93,7 @@ var
 
   //Prestart Altitude 
   PreStartAltLimit, NbrFixes,  MinPreStartAltTime : Integer;
+  center, Vleft, Vright, Vresult, item: Integer;
   MinPreStartAlt : Double;
   PreStartInfo : string;
   PreStartLimitOK : boolean;
@@ -502,13 +507,50 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        //skip through to start gate open
-        if NbrFixes > 0 then
-        begin
-          while  (j < NbrFixes) and (Pilots[i].Fixes[j].TSec < Task.NoStartBeforeTime) do 
+        // binary searches Begin, binárne hľadanie začiatok
+        if Task.NoStartBeforeTime <= 0 then // Nie je nastavený čas otvorenia odletu!
           begin
-            j := J + 1;
+            Info1 := 'Nie je nastavený čas otvorenia odletu! Nastavte čas otvorenia odletu!!!' ;
+            exit;
           end;
+        begin
+          item := Task.NoStartBeforeTime;
+          Vleft:=0;
+          Vright:= GetArrayLength(Pilots[i].Fixes) - 1;
+          if Vright < 0 then
+            begin
+               Info1 := 'Vright = -1, IGC súbor je prázdny. Má 0 fixov.';
+               Exit;
+            end;
+          if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, Čas otvorenia odletu je mimo rozsah fixov IGC súboru.
+          begin
+            Vresult:=-1; //príznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix nájdený, 2 fix nájdený – interval fixov väčší ako 1 s
+            Info1 := 'element out of scope, Čas otvorenia odletu je mimo rozsah fixov IGC súboru. item = ' + GetTimeString(item);
+            exit;
+          end;
+
+          while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak máme čo deliť
+            center:=(Vleft + Vright) div 2;
+            if (item = Pilots[i].Fixes[center].Tsec) then
+              begin
+                j := center;
+                Vresult:= 1; // found, nájdené, príznak pre ladenie
+                Break; // Ending the loop while, Ukonči slučku while!
+            end
+            else
+            if (item < Pilots[i].Fixes[center].Tsec) then
+              Vright:=center - 1 // throw away the Vright half, zahodiť pravú (Vright) polovicu
+            else
+              Vleft:=center + 1; // discard the Vleft half, zahodiť ľavú (Vleft) polovicu
+              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundový záznam, priradí najbližší vyšší fix po čase otvorenia odletu
+                begin
+                  j := center + 1;
+                  Vresult:= 2; // found, nájdené, príznak pre ladenie
+                  Break; // Ending the loop while, Ukonči slučku while!
+                end;
+            end;
+        end;
+        // binary searches End, binárne hľadanie Koniec
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
           begin
