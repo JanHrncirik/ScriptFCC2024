@@ -7,6 +7,8 @@ Program Script_FCC2024;
 //   . Opravený syntax v priraďovacom príkaze hendikepov
 //   . Prepnuté na používanie handikepov vo všetkých triedach
 //   . Doplnené binárne vyhľadávanie fixu času otvorenia odletu
+//   . Vymazané – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
+//
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
 //       . Support for 7.4.5b Starting Procedures - Pre-start altitude
@@ -581,98 +583,4 @@ begin
       end; 
     end;
   end;
-
-  // altitude less than minimum altitude
-  if (MinimumAlt <> 0 )  then
-  begin
-   // showmessage('start minimum alt.  MinAlt=' + FloatToStr(MinimumAlt));
-    
-    for i:=0 to GetArrayLength(Pilots)-1 do
-    begin
-        NbrFixes := GetArrayLength(Pilots[i].Fixes);
-        if (NbrFixes > 0) then 
-        begin
-        // walk through until above minimum altitude for > 60 seconds on initial launch
-          
-          //showmessage('pilot:' + IntToStr(i) + ' NBRFIXES = ' + IntToStr(NbrFixes));
-          j:=0;
-          FixDuration := 0;
-          LastFixTime := Pilots[i].Fixes[j].Tsec;
-          while ((j < NbrFixes - 1) and (FixDuration < 60)) do 
-          begin
-            if (Pilots[i].Fixes[j].AltQnh >= MinimumAlt) then
-            begin
-              FixDuration := FixDuration + (Pilots[i].Fixes[j].Tsec - LastFixTime); 
-            end
-            else begin
-              FixDuration := 0;
-            end;
-            LastFixTime := Pilots[i].Fixes[j].Tsec;
-            j := j + 1;
-          end;
-          if (FixDuration >= 60) and (j < NbrFixes - 1) then
-          begin
-            LaunchAboveAltFix := j;
-            //showmessage('pilot:' + IntToStr(i) + ' LaunchAboveAltFix = ' + IntToStr(LaunchAboveAltFix));
-
-            // walk backward through until above minimum altitude for > 60 seconds on final glide
-            j:=NbrFixes - 1;
-            FixDuration := 0;
-            if (j < NbrFixes - 1) then LastFixTime := Pilots[i].Fixes[j].Tsec;
-            while ((j > LaunchAboveAltFix) and (FixDuration < 60)) do 
-            begin
-              if (Pilots[i].Fixes[j].AltQnh >= MinimumAlt) then
-              begin
-                FixDuration := FixDuration + (LastFixTime - Pilots[i].Fixes[j].Tsec ); 
-              end
-              else begin
-                FixDuration := 0;
-              end;
-              LastFixTime := Pilots[i].Fixes[j].Tsec;
-              j := j - 1;
-            end;
-            if ((FixDuration >= 60) and (j > LaunchAboveAltFix)) then
-            begin
-              FGAboveAltFix := j;
-              //showmessage('pilot:' + IntToStr(i) + ' FGAboveAltFix = ' + IntToStr(FGAboveAltFix));
-              // check between LaunchAboveAltFix to FGAboveAltFix to find points below 
-
-              j := LaunchAboveAltFix;
-
-              LowPoint := Pilots[i].Fixes[j].AltQnh;
-              BelowAltFound := FALSE;
-              //showmessage('pilot:' + IntToStr(i) + ' InitialLowPoint = ' + FloatToStr(LowPoint));
-              while ((j < FGAboveAltFix) and Not(BelowAltFound)) do
-              begin
-                // showmessage('i:' + inttostr(i));
-                // showmessage('j:' + inttostr(j));
-                // showmessage('altqnh:' + floattostr(Pilots[i].Fixes[j].AltQnh));
-                // showmessage('lowpoint:' + floattostr(LowPoint));
-                
-                if (j <= 0) or (j >=  NbrFixes - 2 ) then showmessage('pilot:' + IntToStr(i) +' bad j:' + inttostr(j) + ' LaunchAboveAltFix = ' + IntToStr(LaunchAboveAltFix) + ' FGAboveAltFix = ' + IntToStr(FGAboveAltFix) + ' NbrFixes' + IntToStr(NbrFixes));
-
-                if (Pilots[i].Fixes[j].AltQnh < LowPoint) then 
-                begin
-                  LowPoint := Pilots[i].Fixes[j].AltQnh;
-                  LowPointTsec := Pilots[i].Fixes[j].Tsec;
-                end;
-                if (Pilots[i].Fixes[j].AltQnh < MinimumAlt) then BelowAltFound := TRUE; 
-                j := j+1;
-              end;
-
-              if (BelowAltFound) then 
-              begin
-                if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
-                Pilots[i].warning := Pilots[i].warning + 'First Below Minimum Alt: ' + FormatFloat('0.0',LowPoint) ;
-                Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(LowPointTsec);
-              end;
-              //showmessage('pilot:' + IntToStr(i) + ' LowPoint = ' + FloatToStr(LowPoint));
-            end;
-          end;
-        end;
-    end;  
-
-    // 
-  end;
-  
 end.
