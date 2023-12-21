@@ -575,8 +575,7 @@ begin
             if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
             Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt)) ;
             Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
-            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty '_ 
-            _ + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #10;
+            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #10;
           end;
         end;
       end; 
