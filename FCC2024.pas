@@ -256,7 +256,7 @@ begin
   end;
   
   // Annex A version 2022 has removed the capability of Hmin in the results. Simply removing Hmin doesn't work for comps where Handicaps are given as 108, 125 etc. Hence this addition.
-  if Hmin >= 500 then Hmin = 1000;                   // Not sure if there are any comps that uses Annex A rules with Handicaps over 10000?
+  if Hmin >= 500 then Hmin := 1000;                   // Not sure if there are any comps that uses Annex A rules with Handicaps over 10000?
   if (Hmin >= 50) and (Hmin < 500) then Hmin := 100; // For comps that use Handicaps typically between 70 and 130
   if (Hmin >= 5) and (Hmin < 50) then Hmin := 10;    // Just in case
   if (Hmin >= 0.5) and (Hmin < 5) then Hmin := 1;    // Typical IGC Annex A comps with handicaps around 1.000
