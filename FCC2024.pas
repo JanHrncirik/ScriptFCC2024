@@ -63,7 +63,7 @@ Program Script_FCC2024;
 // Version 3.20
 //   . added warnings when Exit 
 
-const UseHandicaps = 2;   // set to: 0 to disable handicapping, 1 to use handicaps, 2 is auto (handicaps only for club and multi-seat)
+const UseHandicaps = 1;   // set to: 0 to disable handicapping, 1 to use handicaps, 2 is auto (handicaps only for club and multi-seat)
       PevStartTimeBuffer = 30; // PEV which is less than PevStartTimeBuffer seconds later than last PEV will be ignored and not counted
    
 var
