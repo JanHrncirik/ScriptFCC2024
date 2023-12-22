@@ -8,6 +8,8 @@ Program Script_FCC2024;
 //   . Prepnuté na používanie handikepov vo všetkých triedach
 //   . Doplnené binárne vyhľadávanie fixu času otvorenia odletu
 //   . Vymazané – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
+//   Zadávanie parametrov PEV a PreStartAlt do riadku "Vlasontnosti souěžního dne/Pilot[i].Tag:" ("Contest day proprietes/Tag:")
+//   . príklad: "PEVWaitTime=10 PEVStartWindow=5 PreStartAlt=1800"
 //
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
