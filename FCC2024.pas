@@ -511,13 +511,13 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        // binary searches Begin, binárne hľadanie začiatok
+        // binary searches Begin, binárne hľadanie fixu otvorenia odletu – Začiatok
         if Task.NoStartBeforeTime <= 0 then // Nie je nastavený čas otvorenia odletu!
           begin
             Info1 := 'Nie je nastavený čas otvorenia odletu! Nastavte čas otvorenia odletu!!!' ;
             exit;
           end;
-        begin
+        
           item := Task.NoStartBeforeTime;
           Vleft:=0;
           Vright:= GetArrayLength(Pilots[i].Fixes) - 1;
@@ -542,16 +542,16 @@ begin
                 Break; // Ending the loop while, Ukonči slučku while!
             end
             else
-            if (item < Pilots[i].Fixes[center].Tsec) then
-              Vright:=center - 1 // throw away the Vright half, zahodiť pravú (Vright) polovicu
-            else
-              Vleft:=center + 1; // discard the Vleft half, zahodiť ľavú (Vleft) polovicu
-              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundový záznam, priradí najbližší vyšší fix po čase otvorenia odletu
-                begin
-                  j := center + 1;
-                  Vresult:= 2; // found, nájdené, príznak pre ladenie
-                  Break; // Ending the loop while, Ukonči slučku while!
-                end;
+              if (item < Pilots[i].Fixes[center].Tsec) then
+                Vright:=center - 1 // throw away the Vright half, zahodiť pravú (Vright) polovicu
+              else
+                Vleft:=center + 1; // discard the Vleft half, zahodiť ľavú (Vleft) polovicu
+                if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundový záznam, priradí najbližší vyšší fix po čase otvorenia odletu
+                  begin
+                    j := center + 1;
+                    Vresult:= 2; // found, nájdené, príznak pre ladenie
+                    Break; // Ending the loop while, Ukonči slučku while!
+                 end;
             end;
         end;
         // binary searches End, binárne hľadanie Koniec
