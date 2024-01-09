@@ -556,7 +556,7 @@ begin
             end;
         end;
         // binary searches End, binárne hľadanie Koniec
-        Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', to je čas ' + GetTimestring(Pilots[i].Fixes[j].Tsec) + #13;
+        Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
           begin
