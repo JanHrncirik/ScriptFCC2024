@@ -503,6 +503,7 @@ begin
   // 
   if PreStartAltLimit > 0 then
   begin
+    showmessage('Pocet pilotov:' + IntToStr(GetArrayLength(Pilots));
     for i:=0 to GetArrayLength(Pilots)-1 do
     begin
       //if pilot has started check prestart    
