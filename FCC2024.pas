@@ -4,12 +4,12 @@ Program Script_FCC2024;
 //
 // Version 1.0 Date 2023.12.20 by Jan Hrncirik
 // Verzia 1.0 Date 2023.12.21
-//   . Opravený syntax v priraďovacom príkaze hendikepov
-//   . Prepnuté na používanie handikepov vo všetkých triedach
-//   . Doplnené binárne vyhľadávanie fixu času otvorenia odletu
+//   . Opraveny syntax v priraďovacom prikaze hendikepov
+//   . Prepnuté na pouzivanie handikepov vo vsetkych triedach
+//   . Doplnené binarne vyhľadavanie fixu casu otvorenia odletu
 //   . Vymazané – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
-//   Zadávanie parametrov PEV a PreStartAlt do riadku "Vlasontnosti souěžního dne/Pilot[i].Tag:" ("Contest day proprietes/Tag:")
-//   . príklad: "PEVWaitTime=10 PEVStartWindow=5 PreStartAlt=1800"
+//   Zadavanie parametrov PEV a PreStartAlt do riadku "Vlasontnosti souězniho dne/Pilot[i].Tag:" ("Contest day proprietes/Tag:")
+//   . priklad: "PEVWaitTime=10 PEVStartWindow=5 PreStartAlt=1800"
 //
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
@@ -512,10 +512,10 @@ begin
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
         
-        // binary searches Begin, binárne hľadanie fixu otvorenia odletu – Začiatok
-        if Task.NoStartBeforeTime <= 0 then // Nie je nastavený čas otvorenia odletu!
+        // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
+        if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
           begin
-            Info1 := 'Nie je nastavený čas otvorenia odletu! Nastavte čas otvorenia odletu!!!' ;
+            Info1 := 'Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!' ;
             exit;
           end;
         
@@ -524,37 +524,37 @@ begin
         Vright:= GetArrayLength(Pilots[i].Fixes) - 1;
         if Vright < 0 then
           begin
-              Info1 := 'Vright = -1, IGC súbor je prázdny. Má 0 fixov.';
+              Info1 := 'Vright = -1, IGC subor je prazdny. Ma 0 fixov.';
               Exit;
           end;
-        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, Čas otvorenia odletu je mimo rozsah fixov IGC súboru.
+        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
-            Vresult:=-1; //príznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix nájdený, 2 fix nájdený – interval fixov väčší ako 1 s
-            Info1 := 'element out of scope, Čas otvorenia odletu je mimo rozsah fixov IGC súboru. item = ' + GetTimeString(item);
+            Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
+            Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
             exit;
           end;
 
-        while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak máme čo deliť
+        while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
           if (item = Pilots[i].Fixes[center].Tsec) then
             begin
             j := center;
-             Vresult:= 1; // found, nájdené, príznak pre ladenie
-             Break; // Ending the loop while, Ukonči slučku while!
+             Vresult:= 1; // found, najdené, priznak pre ladenie
+             Break; // Ending the loop while, Ukonci slucku while!
             else
              if (item < Pilots[i].Fixes[center].Tsec) then
-              Vright:=center - 1 // throw away the Vright half, zahodiť pravú (Vright) polovicu
+              Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
              else
-              Vleft:=center + 1; // discard the Vleft half, zahodiť ľavú (Vleft) polovicu
-              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundový záznam, priradí najbližší vyšší fix po čase otvorenia odletu
+              Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
+              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
                 begin
                   j := center + 1;
-                  Vresult:= 2; // found, nájdené, príznak pre ladenie
-                  Break; // Ending the loop while, Ukonči slučku while!
+                  Vresult:= 2; // found, najdené, priznak pre ladenie
+                  Break; // Ending the loop while, Ukonci slucku while!
                 end;
             end;
         end;
-        // binary searches End, binárne hľadanie Koniec
+        // binary searches End, binarne hľadanie Koniec
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
