@@ -1,15 +1,6 @@
-Program Script_FCC2024;
+Program IGC_Annex_A_scoring_WGC2023v3_1;
 // Collaborate on writing scripts at Github:
-// https://github.com/JanHrncirik/ScriptFCC2024
-//
-// Version 1.0 Date 2023.12.20 by Jan Hrncirik
-// Verzia 1.0 Date 2023.12.21
-//   . Opraveny syntax v priraďovacom prikaze hendikepov
-//   . Prepnuté na pouzivanie handikepov vo vsetkych triedach
-//   . Doplnené binarne vyhľadavanie fixu casu otvorenia odletu
-//   . Vymazané – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
-//   Zadavanie parametrov PEV a PreStartAlt do riadku "Vlasontnosti souězniho dne/Pilot[i].Tag:" ("Contest day proprietes/Tag:")
-//   . priklad: "PEVWaitTime=10 PEVStartWindow=5 PreStartAlt=1800"
+// https://github.com/naviter/seeyou_competition_scripts/
 //
 // Version 10.0 Date 2023.10.30 by Neil Campbell
 //   . Incorporate changes required for Annex A 2023 Edition and WGC 2023 Local Procedures
@@ -71,7 +62,7 @@ Program Script_FCC2024;
 // Version 3.20
 //   . added warnings when Exit 
 
-const UseHandicaps = 1;   // set to: 0 to disable handicapping, 1 to use handicaps, 2 is auto (handicaps only for club and multi-seat)
+const UseHandicaps = 2;   // set to: 0 to disable handicapping, 1 to use handicaps, 2 is auto (handicaps only for club and multi-seat)
       PevStartTimeBuffer = 30; // PEV which is less than PevStartTimeBuffer seconds later than last PEV will be ignored and not counted
    
 var
@@ -97,7 +88,6 @@ var
 
   //Prestart Altitude 
   PreStartAltLimit, NbrFixes,  MinPreStartAltTime : Integer;
-  center, Vleft, Vright, Vresult, item: Integer;
   MinPreStartAlt : Double;
   PreStartInfo : string;
   PreStartLimitOK : boolean;
@@ -265,7 +255,7 @@ begin
   end;
   
   // Annex A version 2022 has removed the capability of Hmin in the results. Simply removing Hmin doesn't work for comps where Handicaps are given as 108, 125 etc. Hence this addition.
-  if Hmin >= 500 then Hmin := 1000;                   // Not sure if there are any comps that uses Annex A rules with Handicaps over 10000?
+  if Hmin >= 500 then Hmin = 1000;                   // Not sure if there are any comps that uses Annex A rules with Handicaps over 10000?
   if (Hmin >= 50) and (Hmin < 500) then Hmin := 100; // For comps that use Handicaps typically between 70 and 130
   if (Hmin >= 5) and (Hmin < 50) then Hmin := 10;    // Just in case
   if (Hmin >= 0.5) and (Hmin < 5) then Hmin := 1;    // Typical IGC Annex A comps with handicaps around 1.000
@@ -511,51 +501,13 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        
-        // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
-        if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
+        //skip through to start gate open
+        if NbrFixes > 0 then
+        begin
+          while  (j < NbrFixes) and (Pilots[i].Fixes[j].TSec < Task.NoStartBeforeTime) do 
           begin
-            Info1 := 'Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!' ;
-            exit;
+            j := J + 1;
           end;
-        
-        item := Task.NoStartBeforeTime;
-        Vleft:=0;
-        Vright:= NbrFixes;
-        if Vright < 0 then
-          begin
-              Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
-              Exit;
-          end;
-        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
-          begin
-            Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
-            Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
-            exit;
-          end;
-
-        while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
-          center:=(Vleft + Vright) div 2;
-          if (item = Pilots[i].Fixes[center].Tsec) then
-            begin
-            j := center;
-             Vresult:= 1; // found, najdené, priznak pre ladenie
-             Break; // Ending the loop while, Ukonci slucku while!
-            else
-             if (item < Pilots[i].Fixes[center].Tsec) then
-              Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
-             else
-              Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
-              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
-                begin
-                  j := center + 1;
-                  Vresult:= 2; // found, najdené, priznak pre ladenie
-                  Break; // Ending the loop while, Ukonci slucku while!
-                end;
-            end;
-        end;
-        // binary searches End, binarne hľadanie Koniec
-        Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
           begin
@@ -579,11 +531,104 @@ begin
           begin
             if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
             Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt)) ;
-            Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
-            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #10;
+            Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime);
           end;
         end;
       end; 
     end;
   end;
+
+  // altitude less than minimum altitude
+  if (MinimumAlt <> 0 )  then
+  begin
+   // showmessage('start minimum alt.  MinAlt=' + FloatToStr(MinimumAlt));
+    
+    for i:=0 to GetArrayLength(Pilots)-1 do
+    begin
+        NbrFixes := GetArrayLength(Pilots[i].Fixes);
+        if (NbrFixes > 0) then 
+        begin
+        // walk through until above minimum altitude for > 60 seconds on initial launch
+          
+          //showmessage('pilot:' + IntToStr(i) + ' NBRFIXES = ' + IntToStr(NbrFixes));
+          j:=0;
+          FixDuration := 0;
+          LastFixTime := Pilots[i].Fixes[j].Tsec;
+          while ((j < NbrFixes - 1) and (FixDuration < 60)) do 
+          begin
+            if (Pilots[i].Fixes[j].AltQnh >= MinimumAlt) then
+            begin
+              FixDuration := FixDuration + (Pilots[i].Fixes[j].Tsec - LastFixTime); 
+            end
+            else begin
+              FixDuration := 0;
+            end;
+            LastFixTime := Pilots[i].Fixes[j].Tsec;
+            j := j + 1;
+          end;
+          if (FixDuration >= 60) and (j < NbrFixes - 1) then
+          begin
+            LaunchAboveAltFix := j;
+            //showmessage('pilot:' + IntToStr(i) + ' LaunchAboveAltFix = ' + IntToStr(LaunchAboveAltFix));
+
+            // walk backward through until above minimum altitude for > 60 seconds on final glide
+            j:=NbrFixes - 1;
+            FixDuration := 0;
+            if (j < NbrFixes - 1) then LastFixTime := Pilots[i].Fixes[j].Tsec;
+            while ((j > LaunchAboveAltFix) and (FixDuration < 60)) do 
+            begin
+              if (Pilots[i].Fixes[j].AltQnh >= MinimumAlt) then
+              begin
+                FixDuration := FixDuration + (LastFixTime - Pilots[i].Fixes[j].Tsec ); 
+              end
+              else begin
+                FixDuration := 0;
+              end;
+              LastFixTime := Pilots[i].Fixes[j].Tsec;
+              j := j - 1;
+            end;
+            if ((FixDuration >= 60) and (j > LaunchAboveAltFix)) then
+            begin
+              FGAboveAltFix := j;
+              //showmessage('pilot:' + IntToStr(i) + ' FGAboveAltFix = ' + IntToStr(FGAboveAltFix));
+              // check between LaunchAboveAltFix to FGAboveAltFix to find points below 
+
+              j := LaunchAboveAltFix;
+
+              LowPoint := Pilots[i].Fixes[j].AltQnh;
+              BelowAltFound := FALSE;
+              //showmessage('pilot:' + IntToStr(i) + ' InitialLowPoint = ' + FloatToStr(LowPoint));
+              while ((j < FGAboveAltFix) and Not(BelowAltFound)) do
+              begin
+                // showmessage('i:' + inttostr(i));
+                // showmessage('j:' + inttostr(j));
+                // showmessage('altqnh:' + floattostr(Pilots[i].Fixes[j].AltQnh));
+                // showmessage('lowpoint:' + floattostr(LowPoint));
+                
+                if (j <= 0) or (j >=  NbrFixes - 2 ) then showmessage('pilot:' + IntToStr(i) +' bad j:' + inttostr(j) + ' LaunchAboveAltFix = ' + IntToStr(LaunchAboveAltFix) + ' FGAboveAltFix = ' + IntToStr(FGAboveAltFix) + ' NbrFixes' + IntToStr(NbrFixes));
+
+                if (Pilots[i].Fixes[j].AltQnh < LowPoint) then 
+                begin
+                  LowPoint := Pilots[i].Fixes[j].AltQnh;
+                  LowPointTsec := Pilots[i].Fixes[j].Tsec;
+                end;
+                if (Pilots[i].Fixes[j].AltQnh < MinimumAlt) then BelowAltFound := TRUE; 
+                j := j+1;
+              end;
+
+              if (BelowAltFound) then 
+              begin
+                if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
+                Pilots[i].warning := Pilots[i].warning + 'First Below Minimum Alt: ' + FormatFloat('0.0',LowPoint) ;
+                Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(LowPointTsec);
+              end;
+              //showmessage('pilot:' + IntToStr(i) + ' LowPoint = ' + FloatToStr(LowPoint));
+            end;
+          end;
+        end;
+    end;  
+
+    // 
+  end;
+  
 end.
