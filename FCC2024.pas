@@ -511,6 +511,7 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
+        showmessage('pilot:' + IntToStr(i) + ' ' + Pilots[i].compID + ' NBRFIXES = ' + IntToStr(NbrFixes));
         
         // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
         if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
@@ -518,7 +519,8 @@ begin
             Info1 := 'Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!' ;
             exit;
           end;
-        
+        showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime);
+
         item := Task.NoStartBeforeTime;
         Vleft:=0;
         Vright:= NbrFixes;
