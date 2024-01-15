@@ -532,7 +532,7 @@ begin
               showmessage('Subor je prazdny. Pozri info!');
               Exit;
           end;
-        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
+        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item >Pilots[i].Fixes[Vright] .Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
             Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
             Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
@@ -544,12 +544,11 @@ begin
           center:=(Vleft + Vright) div 2;
           showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
-          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center) + ' item = Pilots[i].Fixes[center].Tsec = ' + item = Pilots[i].Fixes[center].Tsec);
+          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center) + ' item = Pilots[i].Fixes[center].Tsec = ';
           if (item = Pilots[i].Fixes[center].Tsec) then
-            begin
-            j := center;
+             j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
-             showmessage('Našiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
+             showmessage('Nasiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
              Break; // Ending the loop while, Ukonci slucku while!
             else
              if (item < Pilots[i].Fixes[center].Tsec) then
@@ -559,12 +558,10 @@ begin
               showmessage('Zahadzujem lavu polovicu súboru Vleft = ' + IntToStr(Vleft));
               Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
               if (item < Vleft) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
-                begin
                   showmessage('nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu j = ' + IntToStr(j));
                   j := center + 1;
                   Vresult:= 2; // found, najdené, priznak pre ladenie
                   Break; // Ending the loop while, Ukonci slucku while!
-                end;
             end;
         end;
         // binary searches End, binarne hľadanie Koniec
