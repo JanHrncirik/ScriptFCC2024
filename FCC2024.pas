@@ -503,7 +503,6 @@ begin
   // 
   if PreStartAltLimit > 0 then
   begin
-    //showmessage('Pocet pilotov:' + IntToStr(GetArrayLength(Pilots));
     for i:=0 to GetArrayLength(Pilots)-1 do
     begin
       //if pilot has started check prestart    
@@ -524,20 +523,20 @@ begin
         showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime));
 
         item := Task.NoStartBeforeTime;
-        Vleft:=Pilots[i].Fixes[0].Tsec;
-        Vright:= Pilots[i].Fixes[NbrFixes].Tsec;
-        showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(vleft) + ' Vright ' + GetTimeString(Vright));
+        Vleft:= 0;
+        Vright:= NBRFIXES;
+        showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' Vright ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
         if Vright < 0 then
           begin
               Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
               showmessage('Subor je prazdny. Pozri info!');
               Exit;
           end;
-        if ((item < Vleft) or (item > Vright)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
+        if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
             Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
             Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
-            showmessage('Sme mimo casu odletu. Pozri info!' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' do ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
+            showmessage('Sme mimo casu odletu. Pozri info!' + GetTimeString(Vleft) + ' do ' + GetTimeString(Vright));
             exit;
           end;
         cyklus := 0;
@@ -549,7 +548,7 @@ begin
             begin
             j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
-             showmessage('Našiel som fix zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
+             showmessage('Našiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
              Break; // Ending the loop while, Ukonci slucku while!
             else
              if (item < center) then
