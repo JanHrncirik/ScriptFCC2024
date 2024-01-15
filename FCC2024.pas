@@ -543,22 +543,22 @@ begin
         cyklus := 0;
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
-          showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
+          showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
-          if (item = Pilots[i].Fixes[center].Tsec) then
+          if (item = center) then
             begin
             j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
              showmessage('Našiel som fix zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
              Break; // Ending the loop while, Ukonci slucku while!
             else
-             if (item < Pilots[i].Fixes[center].Tsec) then
+             if (item < center) then
               Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
               showmessage('Zahadzujem pravu polovicu súboru Vright = ' + IntToStr(Vright));
              else
               showmessage('Zahadzujem lavu polovicu súboru Vleft = ' + IntToStr(Vleft));
               Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
-              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
+              if (item < Vleft) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
                 begin
                   showmessage('nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu j = ' + IntToStr(j));
                   j := center + 1;
