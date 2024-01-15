@@ -544,14 +544,14 @@ begin
           center:=(Vleft + Vright) div 2;
           showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
-          if (item = center) then
+          if (item = Pilots[i].Fixes[center].Tsec) then
             begin
             j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
              showmessage('Našiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
              Break; // Ending the loop while, Ukonci slucku while!
             else
-             if (item < center) then
+             if (item < Pilots[i].Fixes[center].Tsec) then
               Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
               showmessage('Zahadzujem pravu polovicu súboru Vright = ' + IntToStr(Vright));
              else
