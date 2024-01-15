@@ -97,7 +97,7 @@ var
 
   //Prestart Altitude 
   PreStartAltLimit, NbrFixes,  MinPreStartAltTime : Integer;
-  center, Vleft, Vright, Vresult, item: Integer;
+  center, Vleft, Vright, Vresult, item, cyklus: Integer;
   MinPreStartAlt : Double;
   PreStartInfo : string;
   PreStartLimitOK : boolean;
@@ -512,7 +512,7 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        showmessage('Som v cykle zistovania fixu zodpovedajúcemu casu otvorenia odletu - pilot:' + IntToStr(i) + ' ' + Pilots[i].compID + ' Pocet fixov zaznamu NBRFIXES = ' + IntToStr(NbrFixes));
+        showmessage('Som v cykle zistovania fixu zodpovedajucemu casu otvorenia odletu - pilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Pocet fixov zaznamu NBRFIXES = ' + IntToStr(NbrFixes));
         
         // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
         if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
@@ -539,10 +539,11 @@ begin
             showmessage('Sme mimo casu odletu. Pozri info!' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' do ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
             exit;
           end;
-
+        cyklus := 0;
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
-          showmessage('Som prvy krok v binárnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + 'Vright = ' + IntToStr(Vright));
+          showmessage('Som ' + IntToStr(cyklus) + '. krok v binarnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
+          cyklus := cyklus + 1;
           if (item = Pilots[i].Fixes[center].Tsec) then
             begin
             j := center;
