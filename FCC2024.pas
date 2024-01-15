@@ -544,13 +544,13 @@ begin
           center:=(Vleft + Vright) div 2;
           showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
-          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center) + ' item = Pilots[i].Fixes[center].Tsec = ';
+          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center);
           if (item = Pilots[i].Fixes[center].Tsec) then
              j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
              showmessage('Nasiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
              Break; // Ending the loop while, Ukonci slucku while!
-            else
+          else
              if (item < Pilots[i].Fixes[center].Tsec) then
               Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
               showmessage('Zahadzujem pravu polovicu súboru Vright = ' + IntToStr(Vright));
@@ -562,8 +562,8 @@ begin
                   j := center + 1;
                   Vresult:= 2; // found, najdené, priznak pre ladenie
                   Break; // Ending the loop while, Ukonci slucku while!
-            end;
-        end;
+             end;
+          end;
         // binary searches End, binarne hľadanie Koniec
         showmessage('Ukončil som hladanie fixu j = ' + IntToStr(j) + 'Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
