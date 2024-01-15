@@ -524,8 +524,8 @@ begin
         showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime));
 
         item := Task.NoStartBeforeTime;
-        Vleft:=0;
-        Vright:= NbrFixes;
+        Vleft:=Pilots[i].Fixes[0].Tsec;
+        Vright:= Pilots[i].Fixes[NbrFixes].Tsec;
         if Vright < 0 then
           begin
               Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
@@ -542,7 +542,7 @@ begin
         cyklus := 0;
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
-          showmessage('Som ' + IntToStr(cyklus) + '. krok v binarnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
+          showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
           if (item = Pilots[i].Fixes[center].Tsec) then
             begin
