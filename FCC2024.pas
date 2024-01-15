@@ -512,15 +512,16 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        showmessage('pilot:' + IntToStr(i) + ' ' + Pilots[i].compID + ' NBRFIXES = ' + IntToStr(NbrFixes));
+        showmessage('Som v cykle zistovania fixu zodpovedajúcemu casu otvorenia odletu - pilot:' + IntToStr(i) + ' ' + Pilots[i].compID + ' Pocet fixov zaznamu NBRFIXES = ' + IntToStr(NbrFixes));
         
         // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
         if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
           begin
+            showmessage('Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!');
             Info1 := 'Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!' ;
             exit;
           end;
-        showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime);
+        showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime));
 
         item := Task.NoStartBeforeTime;
         Vleft:=0;
@@ -528,29 +529,36 @@ begin
         if Vright < 0 then
           begin
               Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
+              showmessage('Subor je prazdny. Pozri info!');
               Exit;
           end;
         if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item > Pilots[i].Fixes[Vright].Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
             Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
             Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
+            showmessage('Sme mimo casu odletu. Pozri info!' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' do ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
             exit;
           end;
 
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
+          showmessage('Som prvy krok v binárnom cykle center = ' + IntToStr(center) + 'Vleft = ' + IntToStr(Vleft) + 'Vright = ' + IntToStr(Vright));
           if (item = Pilots[i].Fixes[center].Tsec) then
             begin
             j := center;
              Vresult:= 1; // found, najdené, priznak pre ladenie
+             showmessage('Našiel som fix zodpovedajúci otvoreniu pásky center = ' + IntToStr(center));
              Break; // Ending the loop while, Ukonci slucku while!
             else
              if (item < Pilots[i].Fixes[center].Tsec) then
               Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
+              showmessage('Zahadzujem pravu polovicu súboru Vright = ' + IntToStr(Vright));
              else
+              showmessage('Zahadzujem lavu polovicu súboru Vleft = ' + IntToStr(Vleft));
               Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
               if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
                 begin
+                  showmessage('nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu j = ' + IntToStr(j));
                   j := center + 1;
                   Vresult:= 2; // found, najdené, priznak pre ladenie
                   Break; // Ending the loop while, Ukonci slucku while!
@@ -558,6 +566,7 @@ begin
             end;
         end;
         // binary searches End, binarne hľadanie Koniec
+        showmessage('Ukončil som hladanie fixu j = ' + IntToStr(j) + 'Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
