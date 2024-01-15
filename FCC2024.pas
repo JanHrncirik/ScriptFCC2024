@@ -544,6 +544,7 @@ begin
           center:=(Vleft + Vright) div 2;
           showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
+          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center) + ' item = Pilots[i].Fixes[center].Tsec = ' + item = Pilots[i].Fixes[center].Tsec);
           if (item = Pilots[i].Fixes[center].Tsec) then
             begin
             j := center;
