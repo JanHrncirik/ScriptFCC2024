@@ -556,8 +556,8 @@ begin
           begin 
              if (item < Pilots[i].Fixes[center].Tsec) then
              begin
-              Vright:=center - 1 // throw away the Vright half, zahodit pravu (Vright) polovicu
-              showmessage('Zahadzujem pravu polovicu súboru Vright = ' + IntToStr(Vright));
+              Vright:=center - 1; // throw away the Vright half, zahodit pravu (Vright) polovicu
+              showmessage('Zahadzujem pravu polovicu suboru Vright = ' + IntToStr(Vright));
              end
              else
              begin
@@ -573,7 +573,7 @@ begin
             end;  
           end;
         // binary searches End, binarne hľadanie Koniec
-        showmessage('Ukončil som hladanie fixu j = ' + IntToStr(j) + 'Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
+        showmessage('Ukoncil som hladanie fixu j = ' + IntToStr(j) + 'Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
