@@ -576,7 +576,7 @@ begin
           
         end;  
         // binary searches End, binarne hľadanie Koniec
-        showmessage('Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
+        showmessage('Piilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
