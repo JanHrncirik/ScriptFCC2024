@@ -540,6 +540,7 @@ begin
             exit;
           end;
         cyklus := 0;
+       
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
           showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
@@ -560,7 +561,6 @@ begin
               showmessage('Zahadzujem pravu polovicu suboru Vright = ' + IntToStr(Vright));
              end
              else
-             begin
               showmessage('Zahadzujem lavu polovicu súboru Vleft = ' + IntToStr(Vleft));
               Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
               if (item < Vleft) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
@@ -570,10 +570,11 @@ begin
                   Vresult:= 2; // found, najdené, priznak pre ladenie
                   Break; // Ending the loop while, Ukonci slucku while!
               end;
-            end;  
+             
           end;
+        end;  
         // binary searches End, binarne hľadanie Koniec
-        showmessage('Ukoncil som hladanie fixu j = ' + IntToStr(j) + 'Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
+        showmessage('Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
