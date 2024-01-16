@@ -4,10 +4,10 @@ Program Script_FCC2024;
 //
 // Version 1.0 Date 2023.12.20 by Jan Hrncirik
 // Verzia 1.0 Date 2023.12.21
-//   . Opraveny syntax v priraďovacom prikaze hendikepov
-//   . Prepnuté na pouzivanie handikepov vo vsetkych triedach
-//   . Doplnené binarne vyhľadavanie fixu casu otvorenia odletu
-//   . Vymazané – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
+//   . Opraveny syntax v priradovacom prikaze hendikepov
+//   . Prepnute na pouzivanie handikepov vo vsetkych triedach
+//   . Doplnene binarne vyhľadavanie fixu casu otvorenia odletu
+//   . Vymazane – Deleted warning for below minimum height above airfield elevation - copy Ian's from Australia Rules
 //   Zadavanie parametrov PEV a PreStartAlt do riadku "Vlasontnosti souězniho dne/Pilot[i].Tag:" ("Contest day proprietes/Tag:")
 //   . priklad: "PEVWaitTime=10 PEVStartWindow=5 PreStartAlt=1800"
 //
@@ -511,7 +511,7 @@ begin
         PreStartLimitOK := FALSE;
         j := 0;
         NbrFixes := GetArrayLength(Pilots[i].Fixes)-1;
-        showmessage('Som v cykle zistovania fixu zodpovedajucemu casu otvorenia odletu - pilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Pocet fixov zaznamu NBRFIXES = ' + IntToStr(NbrFixes));
+        //showmessage('Som v cykle zistovania fixu zodpovedajucemu casu otvorenia odletu - pilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Pocet fixov zaznamu NBRFIXES = ' + IntToStr(NbrFixes));
         
         // binary searches Begin, binarne hľadanie fixu otvorenia odletu – Zaciatok
         if Task.NoStartBeforeTime <= 0 then // Nie je nastaveny cas otvorenia odletu!
@@ -520,12 +520,12 @@ begin
             Info1 := 'Nie je nastaveny cas otvorenia odletu! Nastavte cas otvorenia odletu!!!' ;
             exit;
           end;
-        showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime));
+        //showmessage('Otvorenie pasky:' + IntToStr(Task.NoStartBeforeTime) + ' = ' + GetTimeString(Task.NoStartBeforeTime));
 
         item := Task.NoStartBeforeTime;
         Vleft:= 0;
         Vright:= NBRFIXES;
-        showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' Vright ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
+        //showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' Vright ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
         if Vright < 0 then
           begin
               Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
@@ -543,14 +543,14 @@ begin
        
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
           center:=(Vleft + Vright) div 2;
-          showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
+          //showmessage('Som ' + IntToStr(cyklus) + '. kroku v binarnom cykle center = ' + IntToStr(center) + ' Vleft = ' + IntToStr(Vleft) + ' Vright = ' + IntToStr(Vright));
           cyklus := cyklus + 1;
-          showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center));
+          //showmessage('item = ' + IntToStr(item) + ' center = ' + IntToStr(center));
           if (item = Pilots[i].Fixes[center].Tsec) then
           begin
              j := center;
-             Vresult:= 1; // found, najdené, priznak pre ladenie
-             showmessage('Nasiel som fix s casom zodpovedajúci otvoreniu pásky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
+             Vresult:= 1; // found, najdene, priznak pre ladenie
+             showmessage('Nasiel som fix s casom zodpovedajuci otvoreniu pasky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
              Break; // Ending the loop while, Ukonci slucku while!
           end
           else
@@ -558,20 +558,22 @@ begin
              if (item < Pilots[i].Fixes[center].Tsec) then
              begin
               Vright:=center - 1; // throw away the Vright half, zahodit pravu (Vright) polovicu
-              showmessage('Zahadzujem pravu polovicu suboru Vright = ' + IntToStr(Vright));
-             end
+              //showmessage('Zahadzujem pravu polovicu suboru Vright = ' + IntToStr(Vright));
+             end 
              else
-              showmessage('Zahadzujem lavu polovicu súboru Vleft = ' + IntToStr(Vleft));
+             begin 
               Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
-              if (item < Vleft) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
+              //showmessage('Zahadzujem lavu polovicu suboru Vleft = ' + IntToStr(Vleft));
+              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
               begin
-                  showmessage('nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu j = ' + IntToStr(j));
+                  //showmessage('nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu j = ' + IntToStr(j));
                   j := center + 1;
-                  Vresult:= 2; // found, najdené, priznak pre ladenie
+                  Vresult:= 2; // found, najdene, priznak pre ladenie
                   Break; // Ending the loop while, Ukonci slucku while!
               end;
-             
-          end;
+            end;  
+          end;   
+          
         end;  
         // binary searches End, binarne hľadanie Koniec
         showmessage('Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
