@@ -529,7 +529,7 @@ begin
         if Vright < 0 then
           begin
               Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes);
-              showmessage('Subor je prazdny. Pozri info!');
+              showmessage('Subor je prazdny. Pozri info!' + 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes) +  + Pilots[i].compID);
               Exit;
           end;
         if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item >Pilots[i].Fixes[Vright] .Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
