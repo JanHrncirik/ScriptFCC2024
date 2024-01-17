@@ -550,7 +550,7 @@ begin
           begin
              j := center;
              Vresult:= 1; // found, najdene, priznak pre ladenie
-             showmessage('Nasiel som fix s casom zodpovedajuci otvoreniu pasky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
+             //showmessage('Nasiel som fix s casom zodpovedajuci otvoreniu pasky center = ' + IntToStr(center) + ' cas ' + GetTimeString(Pilots[i].Fixes[j] .Tsec) );
              Break; // Ending the loop while, Ukonci slucku while!
           end
           else
@@ -576,7 +576,7 @@ begin
           
         end;  
         // binary searches End, binarne hľadanie Koniec
-        showmessage('Piilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
+        //showmessage('Piilot: ' + IntToStr(i) + ' ' + Pilots[i].compID + ' Ukoncil som hladanie fixu j = ' + IntToStr(j) + ' Cas podla fixu je ' + GetTimeString(Pilots[i].Fixes[j].Tsec));
         //Pilots[i].warning := Pilots[i].warning + 'fix otvorenia odleti j = ' +   FloatToStr(j) + ', Pilot i = ' + FloatToStr(i) + #13;
           //now check for lowest altitude from start gate open to start
           if j <= NbrFixes then 
@@ -600,9 +600,11 @@ begin
           if not(PreStartLimitOK) then 
           begin
             if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
-            Pilots[i].warning := Pilots[i].warning + <b>'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt))</b> ;
+            Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
+            Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt));
             Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
-            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #10;
+            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #13;
+            Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
           end;
         
       end; 
