@@ -528,7 +528,7 @@ begin
         //showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' Vright ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
         if Vright < 0 then
           begin
-              Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + NbrFixes;
+              Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes);
               showmessage('Subor je prazdny. Pozri info!');
               Exit;
           end;
