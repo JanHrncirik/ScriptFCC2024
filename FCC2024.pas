@@ -468,7 +468,7 @@ begin
 
         Pilots[i].Warning:= PevWarning;   
       end;
-      if Pilots[i].start<Task.NoStartBeforeTime then Pilots[i].Warning :=Pilots[i].Warning+ #10'Start='+GetTimestring(Trunc(Pilots[i].start))+' before gate opens!'+', ';     
+      if Pilots[i].start<Task.NoStartBeforeTime then Pilots[i].Warning :=Pilots[i].Warning+ #10+'Start='+GetTimestring(Trunc(Pilots[i].start))+' before gate opens!'+', ';     
     end;
   end;
  
@@ -528,7 +528,7 @@ begin
         //showmessage('item = ' + GetTimeString(item) + ' Vleft ' + GetTimeString(Pilots[i].Fixes[Vleft].Tsec) + ' Vright ' + GetTimeString(Pilots[i].Fixes[Vright].Tsec));
         if Vright < 0 then
           begin
-              Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes);
+              //Info1 := 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes);
               showmessage('Subor je prazdny. Pozri info!' + 'Vright = -1, IGC subor je prazdny. i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes) +  + Pilots[i].compID);
               Exit;
           end;
@@ -537,7 +537,7 @@ begin
             //Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
             //Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
             //showmessage('Sme mimo casu odletu. Pozri info! ' + GetTimeString(Vleft) + ' do ' + GetTimeString(Vright)) + ' ' + Pilots[i].compID;
-            Pilots[i].warning := Pilots[i].warning + 'Vzlet je po otvorení casu odletu.  ' + GetTimeString(item) + ' o ' + GetTimeString(Pilots[i].takeoff);
+            Pilots[i].warning := Pilots[i].warning + 'Vzlet je po otvorení casu odletu.  ' + GetTimestring(Trunc(Task.NoStartBeforeTime)) + ' o ' + GetTimestring(Trunc(Pilots[i].takeoff));
             exit;
           end;
         //cyklus := 0;
