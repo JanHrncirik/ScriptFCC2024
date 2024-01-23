@@ -536,7 +536,7 @@ begin
           begin
             //Vresult:=-1; //priznak pre ladenie, -1 pilotov odlet je mimo fixov, 1 fix najdeny, 2 fix najdeny – interval fixov vacsi ako 1 s
             //Info1 := 'element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru. item = ' + GetTimeString(item);
-            //showmessage('Sme mimo casu odletu. Pozri info! ' + GetTimeString(Vleft) + ' do ' + GetTimeString(Vright)) + ' ' + Pilots[i].compID;
+            showmessage('Sme mimo casu odletu ' + GetTimeString(Trunc(VlPilots[i].Fixes[Vleft].Tsec)) + ' do ' + GetTimeString(Trunc(VlPilots[i].Fixes[Vright].Tsec)) + ' ' + Pilots[i].compID);
             Pilots[i].warning := Pilots[i].warning + #13 +'Vzlet je po otvoreni casu odletu  ' + GetTimestring(Trunc(Task.NoStartBeforeTime)) + ' o ' + GetTimestring(Trunc(Pilots[i].takeoff));
             exit;
           end;
