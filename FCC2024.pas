@@ -532,6 +532,7 @@ begin
         if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item >Pilots[i].Fixes[Vright] .Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
             Pilots[i].warning := Pilots[i].warning + #13 +'Vzlet je po otvoreni casu odletu  ' + GetTimestring(Trunc(Task.NoStartBeforeTime)) + ' o ' + GetTimestring(Trunc(Pilots[i].takeoff));
+            PreStartLimitOK := true;
           end;
        
         while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
