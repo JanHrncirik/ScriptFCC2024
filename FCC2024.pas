@@ -527,7 +527,7 @@ begin
         if Vright = 0 then
           begin
               showmessage('Subor je prazdny ' + 'Vright = 0, IGC subor je prazdny i = ' + IntToStr(i) + ' Vright = ' + IntTostr(NbrFixes) + ' startovy znak ' + Pilots[i].compID);
-              //Exit;
+              PreStartLimitOK := true;
           end;
         if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item >Pilots[i].Fixes[Vright] .Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
           begin
@@ -535,63 +535,65 @@ begin
             PreStartLimitOK := true;
           end;
        
-        while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
-          center:=(Vleft + Vright) div 2;
-          if (item = Pilots[i].Fixes[center].Tsec) then
+        if not(PreStartLimitOK) then 
           begin
-             j := center;
-             Break; // Ending the loop while, Ukonci slucku while!
-          end
-          else
-          begin 
-             if (item < Pilots[i].Fixes[center].Tsec) then
-             begin
-              Vright:=center - 1; // throw away the Vright half, zahodit pravu (Vright) polovicu
-             end 
-             else
-             begin 
-              Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
-              if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
+          while (Vleft <= Vright) and (Vright > 20) do begin // if we have something to share, Ak mame co delit
+            center:=(Vleft + Vright) div 2;
+            if (item = Pilots[i].Fixes[center].Tsec) then
+            begin
+              j := center;
+              Break; // Ending the loop while, Ukonci slucku while!
+            end
+            else
+            begin 
+              if (item < Pilots[i].Fixes[center].Tsec) then
               begin
-                  j := center + 1;
-                  Vresult:= 2; // found, najdene, priznak pre ladenie
-                  Break; // Ending the loop while, Ukonci slucku while!
-              end;
-            end;  
-          end;   
+                Vright:=center - 1; // throw away the Vright half, zahodit pravu (Vright) polovicu
+              end 
+              else
+              begin 
+                Vleft:=center + 1; // discard the Vleft half, zahodit ľavu (Vleft) polovicu
+                if (item < Pilots[i].Fixes[Vleft].Tsec) then //nebol 1 sekundovy zaznam, priradi najblizsi vyssi fix po case otvorenia odletu
+                begin
+                    j := center + 1;
+                    Vresult:= 2; // found, najdene, priznak pre ladenie
+                    Break; // Ending the loop while, Ukonci slucku while!
+                end;
+              end;  
+            end;   
+            
+          end;  
+          // binary searches End, binarne hľadanie Koniec
           
-        end;  
-        // binary searches End, binarne hľadanie Koniec
-        
-          //now check for lowest altitude from start gate open to start
-          if j <= NbrFixes then 
-          begin
-            MinPreStartAlt := Pilots[i].Fixes[j].AltQnh;
-            MinPreStartAltTime := Pilots[i].Fixes[j].TSec;
-          end;
-          while (Pilots[i].Fixes[j].TSec <= Pilots[i].start) and (j < NbrFixes) and not(PreStartLimitOK) do 
-          begin
-            if Pilots[i].Fixes[j].AltQnh < MinPreStartAlt then 
+            //now check for lowest altitude from start gate open to start
+            if j <= NbrFixes then 
             begin
               MinPreStartAlt := Pilots[i].Fixes[j].AltQnh;
               MinPreStartAltTime := Pilots[i].Fixes[j].TSec;
             end;
-            if  Pilots[i].Fixes[j].AltQnh < PreStartAltLimit then 
+            while (Pilots[i].Fixes[j].TSec <= Pilots[i].start) and (j < NbrFixes) and not(PreStartLimitOK) do 
             begin
-              PreStartLimitOK := TRUE;
+              if Pilots[i].Fixes[j].AltQnh < MinPreStartAlt then 
+              begin
+                MinPreStartAlt := Pilots[i].Fixes[j].AltQnh;
+                MinPreStartAltTime := Pilots[i].Fixes[j].TSec;
+              end;
+              if  Pilots[i].Fixes[j].AltQnh < PreStartAltLimit then 
+              begin
+                PreStartLimitOK := TRUE;
+              end;
+              j:=j+1
             end;
-            j:=j+1
+            if not(PreStartLimitOK) then 
+            begin
+              if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
+              Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
+              Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt));
+              Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
+              Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #13;
+              Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
+            end;
           end;
-          if not(PreStartLimitOK) then 
-          begin
-            if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
-            Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
-            Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt));
-            Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
-            Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #13;
-            Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
-          end;
-        
       end; 
     end;
   end;
