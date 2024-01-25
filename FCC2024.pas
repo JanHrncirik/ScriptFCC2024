@@ -530,7 +530,7 @@ begin
               PreStartLimitOK := true;
           end;
        
-        If Vright => 0 then
+        If Vright >= 0 then
           begin
             if ((item < Pilots[i].Fixes[Vleft].Tsec) or (item >Pilots[i].Fixes[Vright] .Tsec)) then // element out of scope, cas otvorenia odletu je mimo rozsah fixov IGC suboru.
               begin
