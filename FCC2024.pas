@@ -222,7 +222,7 @@ begin
   // if DayTag variables PEVWaitTime and PEVStartWindow are set (>0) then PEV Marker Start Warnings are shown 
   if (PEVWaitTime > 0) and (PEVStartWindow> 0) then																					// Only display number of intervals if it is not zero
     begin
-    Info3 :='PEVWaitTime: '+IntToStr(PevWaitTime div 60)+'min, PEVStartWindow: '+IntToStr(PevStartWindow div 60)+'min, ';
+    Info3 :='PEVWaitTime: '+IntToStr(PevWaitTime div 60)+' min, PEVStartWindow: '+IntToStr(PevStartWindow div 60)+' min, ';
     end
   else 
     begin
@@ -235,7 +235,7 @@ begin
   PreStartAltLimit := Trunc(ReadDayTagParameter('PRESTARTALT',0));		// Prestart altitude in m >0
   if PreStartAltLimit > 0 then
   begin
-    Info3 := Info3 + 'PreStart Alt = '+IntToStr(PreStartAltLimit)+'m, ';
+    Info3 := Info3 + 'PreStart Alt = '+IntToStr(PreStartAltLimit)+' m, ';
   end;
 
 
@@ -243,7 +243,7 @@ begin
   MinimumAlt := Trunc(ReadDayTagParameter('MINIMUMALT',0));	
   if MinimumAlt > 0 then
   begin
-    Info3 := Info3 + 'Minimum Alt = '+FloatToStr(MinimumAlt)+'m, ';
+    Info3 := Info3 + 'Minimum Alt = '+FloatToStr(MinimumAlt)+' m, ';
   end;
 
 
@@ -410,8 +410,8 @@ begin
   if (n1/N) <= 0.25 then
     Info1 := 'Day not valid - rule 8.2.1b';
 
-  Info2 := 'Dm = ' + IntToStr(Round(Dm/1000.0)) + 'km';
-  Info2 := Info2 + ', D1 = ' + IntToStr(Round(D1/1000.0)) + 'km';
+  Info2 := 'Dm = ' + IntToStr(Round(Dm/1000.0)) + ' km';
+  Info2 := Info2 + ', D1 = ' + IntToStr(Round(D1/1000.0)) + ' km';
   if (UseHandicaps = 0) or ((UseHandicaps = 2) and (Auto_Hcaps_on = false)) Then
     Info2 := Info2 + ', no handicaps'
   else
@@ -421,8 +421,8 @@ begin
   Info3 := Info3 +' N: ' + IntToStr(Round(N));
   Info3 := Info3 + ', n1: ' + IntToStr(Round(n1));
   Info3 := Info3 + ', n2: ' + IntToStr(Round(n2));
-  Info3 := Info3 + ', Do: ' + FormatFloat('0.00',D0/1000.0) + 'km';
-  Info3 := Info3 + ', Vo: ' + FormatFloat('0.00',V0*3.6) + 'km/h';
+  Info3 := Info3 + ', Do: ' + FormatFloat('0.00',D0/1000.0) + ' km';
+  Info3 := Info3 + ', Vo: ' + FormatFloat('0.00',V0*3.6) + ' km/h';
   
 // Give out PEV as Warnings
 // PevStartTimeBuffer is set to 30
@@ -593,7 +593,7 @@ begin
               if Pilots[i].Warning <> '' then Pilots[i].Warning := Pilots[i].Warning + #10;
               Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
               Pilots[i].warning := Pilots[i].warning + 'Invalid PreStart Alt: ' + FloatToStr(round(MinPreStartAlt));
-              Pilots[i].warning := Pilots[i].warning + 'm at time: '  + GetTimestring(MinPreStartAltTime) + #13;
+              Pilots[i].warning := Pilots[i].warning + ' m at time: '  + GetTimestring(MinPreStartAltTime) + #13;
               Pilots[i].warning := Pilots[i].warning + 'Pre start altitude. Lowest fix above specified altitude ' + FloatToStr(round(MinPreStartAlt)) + ' m, penalty ' + FloatToStr(round(MinPreStartAlt - PreStartAltLimit)) + ' pts' + #13;
               Pilots[i].warning := Pilots[i].warning + '####################################################################' + #13;
             end;
